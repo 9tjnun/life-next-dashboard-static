@@ -1,4 +1,4 @@
-# Life Next Dashboard v11.8 — Calendar Backup Seasonal Thai
+# Life Next Dashboard v11.9 — No Prod Calendar + Logo Sidebar Thai
 
 Static version for Vercel. No npm install, no Next.js build, no package.json.
 
@@ -13,16 +13,10 @@ Upload only these items to repo root:
 
 Do not upload `package.json` or `package-lock.json`.
 
-## Changes in v11.8
+## Changes in v11.9
 
-- Calendar: added Clear All button on the right detail panel to clear all checked tasks for the selected day.
-- Calendar: removed purple product/ebook color direction and changed future product tags to neutral/slate and ebook to warm brown.
-- Seasonal Guide: expanded every month with detailed product/theme directions.
-- Settings: added full JSON backup download and file import/restore.
-- Backup includes Facebook, YouTube, Product/KDP/Ebook records, calendar task-done state, and raw Life Next localStorage keys.
-
-
-
-## v11.8 Update
-- ขยายแท็บรายละเอียดด้านขวาในหน้า Calendar ให้กว้างขึ้น
-- ปฏิทินยังคงใช้พื้นที่กว้าง แต่ panel ขวาอ่านงานรายวันได้สบายกว่าเดิม
+- Calendar: removed all `Prod` tags/tasks from the monthly calendar and selected-day detail panel.
+- Life Next Etsy Shop Sunday slots now show as `Etsy` instead of `Prod`.
+- Calendar legend no longer shows `Prod`.
+- Sidebar channel links are now colored logo-style cards.
+- Backup/Restore still exports all Life Next localStorage data: Facebook records, YouTube records, Product/KDP/Ebook records, calendar checked state, and raw Life Next keys.

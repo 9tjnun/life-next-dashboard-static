@@ -13,7 +13,7 @@ LN.weekTemplateFor = d => {
     template.focus = sunday === 2 ? "KDP + Life Next Etsy Publish Slot 1" : "KDP + Life Next Etsy Publish Slot 2";
     template.tasks.push(
       { id: `kdp-publish-s${sunday}`, platform: "kdp", title: `KDP publish slot ${sunday === 2 ? "1" : "2"}`, detail: `ลง/เตรียมปล่อย KDP รอบวันอาทิตย์ที่ ${sunday} ของเดือน` },
-      { id: `life-next-etsy-publish-s${sunday}`, platform: "product", title: `Life Next Etsy shop slot ${sunday === 2 ? "1" : "2"}`, detail: `ลงสินค้า Etsy ร้านใหม่ / printable shop รอบวันอาทิตย์ที่ ${sunday} ของเดือน` }
+      { id: `life-next-etsy-publish-s${sunday}`, platform: "etsy", title: `Life Next Etsy shop slot ${sunday === 2 ? "1" : "2"}`, detail: `ลงสินค้า Etsy ร้านใหม่ / printable shop รอบวันอาทิตย์ที่ ${sunday} ของเดือน` }
     );
   }
   if (sunday === 3) {
@@ -35,7 +35,7 @@ LN.textarea = (name,value="",placeholder="") => `<textarea class="textarea" name
 LN.select = (name, options, selected="") => `<select class="select" name="${name}">${options.map(o=>`<option ${o===selected?'selected':''}>${o}</option>`).join("")}</select>`;
 LN.renderSidebar = () => {
   const links = LN.menu.map(i=>`<a class="${i.cls}" href="${i.href}" data-route="${i.href.slice(1)}"><span>${i.icon}</span><span>${i.label}</span></a>`).join("");
-  document.getElementById("sidebar").innerHTML = `<div class="brand-card"><div class="eyebrow">Life Next</div><h1>Planner v11.6</h1><p>Wide calendar / Sunday slots</p></div><nav class="nav">${links}</nav><div class="sidebar-links"><b>ลิงก์ช่องทาง</b><a href="${LN.channelLinks.etsy}" target="_blank">Etsy ByeTension</a><a href="${LN.channelLinks.pinterest}" target="_blank">Pinterest</a><a href="${LN.channelLinks.youtube}" target="_blank">YouTube</a><a href="${LN.channelLinks.facebook}" target="_blank">Facebook</a></div>`;
+  document.getElementById("sidebar").innerHTML = `<div class="brand-card"><div class="eyebrow">Life Next</div><h1>Planner v11.9</h1><p>No Prod tags / logo sidebar</p></div><nav class="nav">${links}</nav><div class="sidebar-links logo-sidebar-links"><b>ลิงก์ช่องทาง</b><div class="side-logo-grid"><a class="side-logo side-etsy" href="${LN.channelLinks.etsy}" target="_blank"><span class="side-logo-mark">E</span><span><strong>Etsy</strong><em>ByeTension</em></span></a><a class="side-logo side-pin" href="${LN.channelLinks.pinterest}" target="_blank"><span class="side-logo-mark">P</span><span><strong>Pinterest</strong><em>Traffic pins</em></span></a><a class="side-logo side-yt" href="${LN.channelLinks.youtube}" target="_blank"><span class="side-logo-mark">▶</span><span><strong>YouTube</strong><em>Shorts</em></span></a><a class="side-logo side-fb" href="${LN.channelLinks.facebook}" target="_blank"><span class="side-logo-mark">f</span><span><strong>Facebook</strong><em>Living room</em></span></a></div></div>`;
 };
 LN.setActiveNav = route => document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("active", a.dataset.route===route));
 LN.platformColorClass = status => status==="Published"||status==="Posted"?"soft-kdp c-kdp":status==="Ready"?"soft-seasonal c-seasonal":status==="Creating"?"soft-product c-product":"soft text-muted";
