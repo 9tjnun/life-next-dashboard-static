@@ -1,34 +1,28 @@
-# Life Next Dashboard v11.5 Wide All Pages v10.8 Thai
+# Life Next Dashboard v11.8 — Calendar Backup Seasonal Thai
 
-เวอร์ชั่นนี้ทำเพื่อให้หน้าตาและรายละเอียดใกล้ v10.8 มากที่สุด แต่ไม่ใช้ Next.js / npm / package.json เพื่อให้ Vercel deploy แบบ Static ได้ทันที
+Static version for Vercel. No npm install, no Next.js build, no package.json.
 
-## ไฟล์ที่ต้องอัปขึ้น GitHub
-- index.html
-- css/
-- js/
-- vercel.json
-- README.md
+## Upload to GitHub
+Upload only these items to repo root:
 
-ห้ามอัป package.json, package-lock.json, node_modules, app/, components/, lib/ กลับเข้ามาใน repo static นี้
+- `index.html`
+- `css/`
+- `js/`
+- `vercel.json`
+- `README.md`
 
-## โครงสร้าง
-- js/data.js = ข้อมูล schedule, seasonal guide, project map, links
-- js/storage.js = localStorage + backup/restore
-- js/ui.js = sidebar, card, button, table helper
-- js/calendar.js = Today dashboard + Calendar + recurring schedule
-- js/records.js = Facebook / YouTube / Product records
-- js/pages.js = Etsy / Pinterest / Seasonal / Guide / Settings
-- js/router.js = จัดการหน้าและเมนู
+Do not upload `package.json` or `package-lock.json`.
 
+## Changes in v11.8
 
-## v11.5 Update
-- Widened the main content area so dashboard/calendar pages feel less squeezed.
-- Added colored logo-style channel link cards on the Today page.
-- Kept static deployment: no npm install, no package.json, no Next.js build.
+- Calendar: added Clear All button on the right detail panel to clear all checked tasks for the selected day.
+- Calendar: removed purple product/ebook color direction and changed future product tags to neutral/slate and ebook to warm brown.
+- Seasonal Guide: expanded every month with detailed product/theme directions.
+- Settings: added full JSON backup download and file import/restore.
+- Backup includes Facebook, YouTube, Product/KDP/Ebook records, calendar task-done state, and raw Life Next localStorage keys.
 
 
-## v11.5 Update
-- Expanded the main content area globally across all pages.
-- Calendar now uses a wider left panel and taller day cells for easier viewing.
-- Sidebar is slightly narrower and page max-width is removed for full desktop width.
-- Homepage logo link cards remain platform-colored.
+
+## v11.8 Update
+- ขยายแท็บรายละเอียดด้านขวาในหน้า Calendar ให้กว้างขึ้น
+- ปฏิทินยังคงใช้พื้นที่กว้าง แต่ panel ขวาอ่านงานรายวันได้สบายกว่าเดิม
