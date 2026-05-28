@@ -1,43 +1,40 @@
-# Life Next Dashboard v11 — Static Vercel Safe Thai
+# Life Next Dashboard v11.2 — Static Organized Thai
 
-เวอร์ชันนี้สร้างมาเพื่อแก้ปัญหา Vercel ค้างที่ `npm install` แบบจบทางเทคนิค
+เวอร์ชั่นนี้เป็น static website เหมือน v11.1 แต่แยกไฟล์ให้แก้ง่ายกว่าเดิม โดยยังไม่ใช้ npm / Next.js / package.json เพื่อให้ Vercel deploy ได้ง่ายและไม่ติด npm install
 
-## สำคัญ
-- ไม่มี `package.json`
-- ไม่มี `package-lock.json`
-- ไม่มี Next.js dependency
-- ไม่มี npm install
-- เป็น static HTML/CSS/JS ล้วน
-- ใช้ localStorage สำหรับ checklist และ records
-- ใช้เวลาไทย / Asia Bangkok logic
+## โครงไฟล์
 
-## Features
-- Today dashboard
-- Monthly calendar
-- Recurring schedule
-- Etsy daily 5 listings
-- Pinterest daily 3–5 pins
-- Facebook daily post
-- Shorts/Reels Wed/Fri/Sun
-- KDP 2 slots/month: วันที่ 14 และ 28
-- Ebook 1 slot/month: วันที่ 21
-- Product records
-- Seasonal guide
-- Export / import JSON backup
+- `index.html` — โครงหน้าเว็บและ script order
+- `css/styles.css` — ดีไซน์ สี layout responsive
+- `js/data.js` — ข้อมูลหลัก เช่น ตาราง weekly, seasonal guide, project map, channel links
+- `js/utils.js` — helper functions, storage, card/pill rendering, nav
+- `js/calendar.js` — Today dashboard, calendar, recurring schedule, checkbox tasks
+- `js/records.js` — Facebook records, YouTube records, record actions
+- `js/pages.js` — Etsy, Pinterest, KDP, Products, Seasonal, Guide, Settings, Backup/Restore
+- `js/router.js` — hash routing และเริ่มเว็บ
+- `vercel.json` — static deploy config
 
-## Upload to GitHub
-อัปไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น root repo:
+## วิธีอัป GitHub
 
-- index.html
-- styles.css
-- app.js
-- vercel.json
-- README.md
+อัปทั้งโฟลเดอร์/ไฟล์เหล่านี้เข้า root repo:
 
-ห้ามอัป package.json / package-lock.json จากเวอร์ชันเก่า
+- `index.html`
+- `css/`
+- `js/`
+- `vercel.json`
+- `README.md`
+
+ห้ามอัป `package.json`, `package-lock.json`, `node_modules`, `.next` กลับเข้าไป เพราะเวอร์ชั่นนี้ตั้งใจไม่ใช้ npm install
 
 ## Vercel Settings
-Framework Preset: Other
-Build Command: ว่าง
-Install Command: ว่าง
-Output Directory: ว่าง หรือ ./
+
+- Framework Preset: Other
+- Install Command: เว้นว่าง
+- Build Command: เว้นว่าง
+- Output Directory: เว้นว่าง หรือ `./`
+
+## Notes
+
+- ข้อมูลบันทึกอยู่ใน localStorage ของ browser
+- Export/Import JSON ได้ในหน้า Settings
+- STORE_PREFIX ยังใช้ `life-next-v11-full` เพื่อให้ข้อมูลจาก v11.1 ยังต่อเนื่องได้
