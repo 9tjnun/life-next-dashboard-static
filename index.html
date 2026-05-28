@@ -3,42 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Life Next Dashboard v11.2</title>
-  <meta name="description" content="Life Next Dashboard static organized planner" />
-  <link rel="stylesheet" href="./css/styles.css" />
+  <title>Life Next Planner v11.3 Static Faithful</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand-card">
-        <div class="eyebrow">Life Next</div>
-        <h1>Planner v11.2</h1>
-        <p>Static Organized</p>
-      </div>
-      <nav id="nav" class="nav"></nav>
-      <div class="side-note">
-        <strong>ลิงก์ช่องทาง</strong>
-        <a href="https://www.etsy.com/shop/ByeTension" target="_blank" rel="noreferrer">Etsy ByeTension</a>
-        <a href="https://www.pinterest.com/byetension/" target="_blank" rel="noreferrer">Pinterest</a>
-        <a href="https://www.youtube.com/@LifeNextChapterCozy" target="_blank" rel="noreferrer">YouTube</a>
-        <a href="https://www.facebook.com/LifeNextChapter/" target="_blank" rel="noreferrer">Facebook</a>
-      </div>
-      <div class="side-note small">
-        <strong>Deploy Mode</strong>
-        <span>Static HTML/CSS/JS · ไม่มี npm install</span>
-      </div>
-    </aside>
+    <aside id="sidebar" class="sidebar"></aside>
     <main class="main">
-      <section id="view"></section>
+      <div id="app" class="page"></div>
     </main>
   </div>
-
-  <!-- Organized static scripts. Keep this order. -->
-  <script src="./js/data.js" defer></script>
-  <script src="./js/utils.js" defer></script>
-  <script src="./js/calendar.js" defer></script>
-  <script src="./js/records.js" defer></script>
-  <script src="./js/pages.js" defer></script>
-  <script src="./js/router.js" defer></script>
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/records.js"></script>
+  <script src="js/pages.js"></script>
+  <script src="js/router.js"></script>
 </body>
 </html>

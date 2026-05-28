@@ -1,0 +1,23 @@
+window.LN = window.LN || {};
+LN.escape = (v="") => String(v).replace(/[&<>"]/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));
+LN.todayISO = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+LN.isoLocal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+LN.thaiDate = d => new Intl.DateTimeFormat("th-TH",{dateStyle:"full"}).format(d);
+LN.thaiMonth = d => new Intl.DateTimeFormat("th-TH",{month:"long",year:"numeric"}).format(d);
+LN.weekTemplateFor = d => LN.weeklyTemplate.find(x=>x.dayIndex===d.getDay()) || LN.weeklyTemplate[0];
+LN.currentSeason = (d=new Date()) => LN.seasonalGuide.find(m=>m.month===d.getMonth()+1) || LN.seasonalGuide[0];
+LN.header = (eyebrow,title,desc) => `<header class="page-header"><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${desc}</p></header>`;
+LN.card = (title, body, cls="") => `<section class="card ${cls}"><h2>${title}</h2>${body}</section>`;
+LN.mini = (label,value,note="",cls="") => `<div class="mini ${cls}"><div class="label">${label}</div><div class="value">${value}</div>${note?`<div class="note">${note}</div>`:""}</div>`;
+LN.pill = (text, cls="soft text-muted") => `<span class="pill ${cls}">${text}</span>`;
+LN.platformPill = (platform, done=false) => { const m=LN.platformMeta[platform]||LN.platformMeta.neutral; return `<span class="tag tag-${platform} ${done?'done':''}">${m.short}</span>`; };
+LN.externalCard = (href,title,desc,cls="") => `<a class="external-card ${cls}" href="${href}" target="_blank" rel="noreferrer"><div class="external-row"><div><h3>${title}</h3><p>${desc}</p></div><span class="text-muted">↗</span></div></a>`;
+LN.input = (name,value="",placeholder="",type="text",extra="") => `<input class="input" name="${name}" type="${type}" value="${LN.escape(value)}" placeholder="${placeholder}" ${extra}/>`;
+LN.textarea = (name,value="",placeholder="") => `<textarea class="textarea" name="${name}" placeholder="${placeholder}">${LN.escape(value)}</textarea>`;
+LN.select = (name, options, selected="") => `<select class="select" name="${name}">${options.map(o=>`<option ${o===selected?'selected':''}>${o}</option>`).join("")}</select>`;
+LN.renderSidebar = () => {
+  const links = LN.menu.map(i=>`<a class="${i.cls}" href="${i.href}" data-route="${i.href.slice(1)}"><span>${i.icon}</span><span>${i.label}</span></a>`).join("");
+  document.getElementById("sidebar").innerHTML = `<div class="brand-card"><div class="eyebrow">Life Next</div><h1>Planner v10</h1><p>Compact calendar tags</p></div><nav class="nav">${links}</nav><div class="sidebar-links"><b>ลิงก์ช่องทาง</b><a href="${LN.channelLinks.etsy}" target="_blank">Etsy ByeTension</a><a href="${LN.channelLinks.pinterest}" target="_blank">Pinterest</a><a href="${LN.channelLinks.youtube}" target="_blank">YouTube</a><a href="${LN.channelLinks.facebook}" target="_blank">Facebook</a></div>`;
+};
+LN.setActiveNav = route => document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("active", a.dataset.route===route));
+LN.platformColorClass = status => status==="Published"||status==="Posted"?"soft-kdp c-kdp":status==="Ready"?"soft-seasonal c-seasonal":status==="Creating"?"soft-product c-product":"soft text-muted";

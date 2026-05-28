@@ -1,107 +1,31 @@
-function taskList(date, mode='interactive'){
-  const key = isoDate(date);
-  const map = doneMap();
-  const t = getWeekTemplate(date);
-  let tasks = [...t.tasks];
-  const day = date.getDate();
-  if(day === 14) tasks.push({ id:'kdp-slot-1', platform:'kdp', title:'KDP Slot 1', detail:'Publishing slot วันที่ 14 / ทำหรือเตรียม KDP book' });
-  if(day === 28) tasks.push({ id:'kdp-slot-2', platform:'kdp', title:'KDP Slot 2', detail:'Publishing slot วันที่ 28 / ทำหรือเตรียม KDP book' });
-  if(day === 21) tasks.push({ id:'ebook-slot', platform:'ebook', title:'Ebook Slot', detail:'Ebook 1 slot / เดือน' });
-  return `<div class="tasks">${tasks.map(task=>{
-    const meta = platformMeta[task.platform] || platformMeta.neutral;
-    const isDone = !!map[key]?.[task.id];
-    return `<label class="task ${isDone?'done':''}"><input type="checkbox" data-date="${key}" data-task="${task.id}" ${isDone?'checked':''} ${mode==='readonly'?'disabled':''}/><div><div class="task-title">${h(task.title)} ${pill(meta.label, meta.cls)}</div><div class="task-meta">${h(task.detail)}</div></div></label>`;
-  }).join('')}</div>`;
-}
-function bindCheckboxes(after=route){
-  document.querySelectorAll('input[data-task]').forEach(cb => cb.onchange = () => {
-    const map = doneMap();
-    const d = cb.dataset.date;
-    const id = cb.dataset.task;
-    map[d] = {...(map[d] || {}), [id]: cb.checked};
-    setDoneMap(map);
-    after();
-  });
-}
-
-function tasksForDate(date){
-  const t = getWeekTemplate(date);
-  const tasks = [...t.tasks];
-  const day = date.getDate();
-  if(day === 14) tasks.push({ id:'kdp-slot-1', platform:'kdp', title:'KDP Slot 1', detail:'Publishing slot วันที่ 14' });
-  if(day === 28) tasks.push({ id:'kdp-slot-2', platform:'kdp', title:'KDP Slot 2', detail:'Publishing slot วันที่ 28' });
-  if(day === 21) tasks.push({ id:'ebook-slot', platform:'ebook', title:'Ebook Slot', detail:'Ebook 1 slot / เดือน' });
-  return tasks;
-}
-
-function renderToday(){
-  const now = bangkokNow();
-  const template = getWeekTemplate(now);
-  const currentSeason = seasonalGuide.find(m => m.month === now.getMonth()+1) || seasonalGuide[0];
-  const map = doneMap();
-  const tasks = tasksForDate(now);
-  const doneCount = tasks.filter(t => map[todayKey()]?.[t.id]).length;
-  const progress = Math.round((doneCount / Math.max(tasks.length,1)) * 100);
-  const fbReady = recordsOf('facebook').filter(r => r.status === 'Ready').length;
-  const ytReady = recordsOf('youtube').filter(r => r.status === 'Ready').length;
-  const activeProducts = recordsOf('product').filter(r => ['Idea','Creating','QA','Ready'].includes(r.status)).length;
-
-  view.innerHTML = shell('Dashboard v11.1 — Static Full Detail', 'วันนี้ต้องทำอะไร', 'หน้าแรกเป็นรายงานตามปฏิทินเท่านั้น ถ้าจะติ๊กงานให้ไปที่หน้าปฏิทิน', `
-    <div class="grid dash-grid">
-      ${card('รายงานวันนี้ตามปฏิทิน', `
-        <div class="grid grid-2">
-          <div><div class="eyebrow muted">Today</div><h3 style="font-size:28px;margin:4px 0">${getThaiDate(now)}</h3><p class="muted"><b>${template.day}</b> · ${template.focus}</p></div>
-          <div class="mini border-seasonal"><div class="label">ธีมเดือนนี้</div><div style="font-size:17px;font-weight:900;margin-top:5px">${currentSeason.theme}</div><div class="note">${currentSeason.ideas}</div></div>
-        </div>
-        <div style="margin-top:16px"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px"><span>Progress จากปฏิทิน</span><span>${doneCount}/${tasks.length} done · ${progress}%</span></div><div class="progress"><span style="width:${progress}%"></span></div></div>
-        <div class="grid grid-3" style="margin-top:16px">${tasks.map(t => {
-          const meta = platformMeta[t.platform] || platformMeta.neutral;
-          const done = !!map[todayKey()]?.[t.id];
-          return `<div class="mini ${done?'border-seasonal':''}"><div>${pill(meta.label, meta.cls)} ${pill(done?'เสร็จแล้ว':'รอทำ', done?'ok':'')}</div><div style="font-weight:900;margin-top:8px">${h(t.title)}</div><div class="note">${h(t.detail)}</div></div>`;
-        }).join('')}</div>
-      `)}
-      ${card('ตารางชีวิตวันนี้', `
-        <div class="mini border-kdp"><div style="font-weight:900">09:00–14:30 · งานผลิต</div><div class="note">${template.morning}</div></div>
-        <div class="mini border-product" style="margin-top:10px"><div style="font-weight:900">21:00–00:00 · ลงงาน + บันทึก</div><div class="note">${template.night}</div></div>
-        <div class="grid grid-2" style="margin-top:12px">${mini('Facebook stock',fbReady,`${fbReady} วัน`)}${mini('YouTube stock',ytReady,`≈ ${Math.floor(ytReady/defaultStockTargets.youtubeWeeklyNeed)} สัปดาห์`)}</div>
-      `)}
-    </div>
-    <div class="grid grid-4" style="margin-top:14px">${mini('FB Ready',fbReady,'แคปชั่นพร้อมลง','border-fb')}${mini('YT Ready',ytReady,'Shorts พร้อมลง','border-yt')}${mini('Active Product',activeProducts,'โปรเจกต์กำลังทำ','border-kdp')}${mini('Today Done',`${doneCount}/${tasks.length}`,'ติ๊กในหน้าปฏิทิน','border-etsy')}</div>
-    ${card('ลิงก์ช่องทางจริง', `<div class="grid grid-4"><a class="mini link-card border-fb" target="_blank" href="${channelLinks.facebook}"><b>Facebook</b><div class="note">ห้องนั่งเล่น / คนแก่พักใจ</div></a><a class="mini link-card border-yt" target="_blank" href="${channelLinks.youtube}"><b>YouTube</b><div class="note">Shorts / mood video</div></a><a class="mini link-card border-etsy" target="_blank" href="${channelLinks.etsy}"><b>Etsy ByeTension</b><div class="note">วอลอาร์ท / 5 listings ต่อวัน</div></a><a class="mini link-card border-pin" target="_blank" href="${channelLinks.pinterest}"><b>Pinterest</b><div class="note">3–5 pins ต่อวัน</div></a></div>`, 'style="margin-top:14px"')}
-  `);
-}
-
-function renderCalendar(){
-  const year = calCursor.getFullYear();
-  const month = calCursor.getMonth();
-  const first = new Date(year, month, 1);
-  const startDay = first.getDay();
-  const count = new Date(year, month + 1, 0).getDate();
-  const days = [];
-  for(let i=0;i<startDay;i++) days.push(null);
-  for(let d=1;d<=count;d++) days.push(new Date(year, month, d));
-  while(days.length % 7 !== 0) days.push(null);
-  const currentSeason = seasonalGuide.find(m => m.month === month + 1) || seasonalGuide[0];
-  const map = doneMap();
-  const todayIso = todayKey();
-  const selectedKey = isoDate(selectedDate);
-  const selectedTemplate = getWeekTemplate(selectedDate);
-  const cells = days.map((day,i)=>{
-    if(!day) return `<div class="day" style="opacity:.45;cursor:default"></div>`;
-    const key = isoDate(day);
-    const tasks = tasksForDate(day);
-    const doneCount = tasks.filter(t => map[key]?.[t.id]).length;
-    const allDone = doneCount === tasks.length;
-    return `<div class="day ${key===todayIso?'today':''} ${key===selectedKey?'selected':''} ${allDone?'allDone':''}" data-select-date="${key}"><div class="day-num">${day.getDate()} ${allDone?'✓':''}</div>${tasks.slice(0,5).map(t=>`<span class="tag ${(platformMeta[t.platform]||platformMeta.neutral).cls}">${(platformMeta[t.platform]||platformMeta.neutral).short}</span>`).join('')}</div>`;
-  }).join('');
-  view.innerHTML = shell('Calendar', 'ปฏิทินกดดูงานรายวัน', 'แต่ละวันใช้แท็กสีเล็ก ๆ บอกงาน ไม่รกตา กดวันที่เพื่อดูรายละเอียดและติ๊กงานที่เสร็จได้ ถ้าเสร็จครบทั้งวัน ช่องวันนั้นจะเป็นสีเขียว', `
-    <div class="grid dash-grid">
-      ${card('ปฏิทินรายเดือน', `<div class="calendar-head"><button class="btn light" id="prevM">← เดือนก่อน</button><div style="text-align:center"><h3 style="margin:0;font-size:26px">${calCursor.toLocaleString('th-TH',{month:'long',year:'numeric'})}</h3><p class="muted" style="margin:0">${currentSeason.theme}</p></div><button class="btn light" id="nextM">เดือนถัดไป →</button></div><div class="calendar">${['อา','จ','อ','พ','พฤ','ศ','ส'].map(d=>`<div class="dow">${d}</div>`).join('')}${cells}</div>`)}
-      ${card('รายละเอียดวันที่เลือก', `<div class="mini border-seasonal"><div class="label">Selected</div><div style="font-size:20px;font-weight:900;margin-top:5px">${getThaiDate(selectedDate)}</div><div class="note">${selectedTemplate.day} · ${selectedTemplate.focus}</div></div><div style="margin-top:12px">${taskList(selectedDate)}</div>`)}
-    </div>
-  `);
-  document.getElementById('prevM').onclick = () => { calCursor = new Date(year, month-1, 1); renderCalendar(); };
-  document.getElementById('nextM').onclick = () => { calCursor = new Date(year, month+1, 1); renderCalendar(); };
-  document.querySelectorAll('[data-select-date]').forEach(el => el.onclick = () => { const [y,m,d]=el.dataset.selectDate.split('-').map(Number); selectedDate = new Date(y,m-1,d); renderCalendar(); });
-  bindCheckboxes(renderCalendar);
-}
+window.LN = window.LN || {};
+LN.renderToday = () => {
+  const fb = LN.loadArray(LN.keys.facebook), yt = LN.loadArray(LN.keys.youtube), prod = LN.loadArray(LN.keys.products), doneMap = LN.loadObject(LN.keys.calendarDone, {});
+  const template = LN.weekTemplateFor(new Date()), season = LN.currentSeason(), today = LN.todayISO();
+  const doneCount = template.tasks.filter(t=>doneMap[today]?.[t.id]).length;
+  const progress = Math.round(doneCount / template.tasks.length * 100);
+  const fbReady = fb.filter(r=>r.status==="Ready").length;
+  const ytReady = yt.filter(r=>r.status==="Ready").length;
+  const activeProducts = prod.filter(p=>["Idea","Creating","QA","Ready"].includes(p.status)).length;
+  const taskCards = template.tasks.map(t=>{ const m=LN.platformMeta[t.platform]; const done=!!doneMap[today]?.[t.id]; return `<div class="task-card ${done?'done':''}"><div class="external-row"><span class="small ${m.color}">${m.label}</span>${LN.pill(done?'เสร็จแล้ว':'รอทำ', done?'soft-kdp c-kdp':'soft text-muted')}</div><div class="task-title">${t.title}</div><div class="task-detail">${t.detail}</div></div>`; }).join("");
+  const body = `<div class="grid grid-main"><section class="card"><h2>รายงานวันนี้ตามปฏิทิน</h2><div class="grid" style="grid-template-columns:1fr 260px"><div><div class="small text-muted" style="text-transform:uppercase;letter-spacing:.16em">Today</div><h2 style="font-size:28px;margin:4px 0 0">${LN.thaiDate(new Date())}</h2><p class="small text-muted">${template.day} · ${template.focus}</p></div><div class="soft"><div class="small text-muted">ธีมเดือนนี้</div><div class="strong">${season.theme}</div><div class="tiny text-muted">${season.ideas}</div></div></div><div style="margin-top:16px"><div class="external-row small text-muted"><span>Progress จากปฏิทิน</span><span>${doneCount}/${template.tasks.length} done · ${progress}%</span></div><div class="progress"><div style="width:${progress}%"></div></div></div><div class="grid grid-3" style="margin-top:16px">${taskCards}</div></section><section class="card"><h2>ตารางชีวิตวันนี้</h2><div class="grid"><div class="task-card soft-kdp"><div class="task-title">09:00–14:30 · งานผลิต</div><div class="task-detail">${template.morning}</div></div><div class="task-card soft-product"><div class="task-title">21:00–00:00 · ลงงาน + บันทึก</div><div class="task-detail">${template.night}</div></div><div class="grid grid-2">${LN.mini('Facebook stock', fbReady, `${fbReady} วัน`)}${LN.mini('YouTube stock', ytReady, `≈ ${Math.floor(ytReady/LN.defaultStockTargets.youtubeWeeklyNeed)} สัปดาห์`)}</div></div></section></div><div class="grid grid-4">${LN.mini('FB Ready', fbReady, 'แคปชั่นพร้อมลง','left-fb')}${LN.mini('YT Ready', ytReady, 'Shorts พร้อมลง','left-yt')}${LN.mini('Active Product', activeProducts, 'โปรเจกต์กำลังทำ','left-kdp')}${LN.mini('Today Done', `${doneCount}/${template.tasks.length}`, 'ติ๊กในหน้าปฏิทิน','left-etsy')}</div>`;
+  return `<div class="space-y">${LN.header('Dashboard v11.3 — Faithful Static from v10.8','วันนี้ต้องทำอะไร','หน้าแรกเป็นรายงานตามปฏิทินเท่านั้น ถ้าจะติ๊กงานให้ไปที่หน้าปฏิทิน')}${body}${LN.card('ลิงก์ช่องทางจริง', `<div class="grid grid-4">${LN.externalCard(LN.channelLinks.facebook,'Facebook','ห้องนั่งเล่น / คนแก่พักใจ','left-fb')}${LN.externalCard(LN.channelLinks.youtube,'YouTube','Shorts / mood video','left-yt')}${LN.externalCard(LN.channelLinks.etsy,'Etsy ByeTension','วอลอาร์ท / 5 listings ต่อวัน','left-etsy')}${LN.externalCard(LN.channelLinks.pinterest,'Pinterest','3–5 pins ต่อวัน','left-pin')}</div>`)}</div>`;
+};
+LN.calendarState = { viewDate: new Date(), selected: new Date() };
+LN.renderCalendar = () => {
+  const s=LN.calendarState, y=s.viewDate.getFullYear(), m=s.viewDate.getMonth(), doneMap=LN.loadObject(LN.keys.calendarDone, {}), season=LN.currentSeason(s.viewDate);
+  const first=new Date(y,m,1), count=new Date(y,m+1,0).getDate(), days=[]; for(let i=0;i<first.getDay();i++)days.push(null); for(let d=1;d<=count;d++)days.push(new Date(y,m,d)); while(days.length%7!==0)days.push(null);
+  const cells = days.map((day,i)=>{ if(!day)return `<div class="day-cell blank"></div>`; const t=LN.weekTemplateFor(day), key=LN.isoLocal(day), selected=key===LN.isoLocal(s.selected), today=key===LN.todayISO(), doneCount=t.tasks.filter(task=>doneMap[key]?.[task.id]).length, all=doneCount===t.tasks.length; return `<button class="day-cell ${selected?'selected':''} ${today?'today':''} ${all?'all-done':''}" data-date="${key}"><div class="day-head"><span class="day-num">${day.getDate()}</span><span class="check-dot">${all?'✓':''}</span></div><div class="tags">${t.tasks.map(task=>LN.platformPill(task.platform,!!doneMap[key]?.[task.id])).join('')}</div><div class="tiny text-muted" style="margin-top:7px">${doneCount}/${t.tasks.length} tasks</div></button>`; }).join("");
+  const st=LN.weekTemplateFor(s.selected), sk=LN.isoLocal(s.selected);
+  const detailTasks = st.tasks.map(task=>{ const meta=LN.platformMeta[task.platform]; const done=!!doneMap[sk]?.[task.id]; return `<button class="task-button ${done?'done':''}" data-task="${task.id}"><div class="row"><div class="left"><span class="tag tag-${task.platform} ${done?'done':''}">${meta.short}</span><div><div class="task-title">${task.title}</div><div class="task-detail">${task.detail}</div></div></div><span class="check-round">${done?'✓':''}</span></div></button>`; }).join("");
+  return `<div class="space-y">${LN.header('Calendar','ปฏิทินรายเดือน','ติ๊กงานประจำวันในปฏิทิน ใช้เป็น daily execution tracker ของ Life Next Chapter')}
+  <div class="grid grid-calendar"><section class="card"><h2>ปฏิทินรายเดือน</h2><div class="calendar-top"><button class="btn light" id="prevMonth">‹</button><div class="calendar-title"><h2>${LN.thaiMonth(s.viewDate)}</h2><p>${season.theme}</p></div><button class="btn light" id="nextMonth">›</button></div><div class="calendar-grid">${['อา','จ','อ','พ','พฤ','ศ','ส'].map(d=>`<div class="day-name">${d}</div>`).join('')}${cells}</div></section><section class="card"><h2>รายละเอียดวันที่เลือก</h2><div class="small text-muted">วันที่เลือก</div><h2 style="font-size:28px;margin:4px 0 12px">${LN.thaiDate(s.selected)}</h2><div class="soft"><div class="strong">${st.day} · ${st.focus}</div><div class="small text-muted"><b>เช้า:</b> ${st.morning}</div><div class="small text-muted"><b>กลางคืน:</b> ${st.night}</div></div><div style="margin-top:16px">${detailTasks}</div><div class="soft-seasonal" style="padding:12px;border-radius:18px;margin-top:16px"><div class="strong">Seasonal Guide</div><div class="tiny text-muted">${season.ideas}</div></div><div class="tags" style="margin-top:12px">${['facebook','youtube','etsy','pinterest','kdp'].map(k=>{const mm=LN.platformMeta[k];return `<span class="pill ${mm.soft} ${mm.color}"><span class="dot" style="background:${mm.dot}"></span>${mm.short}</span>`}).join('')}</div></section></div></div>`;
+};
+LN.bindCalendar = () => {
+  const app=document.getElementById('app');
+  const rerender=()=>LN.navigate('/calendar', false);
+  app.querySelector('#prevMonth')?.addEventListener('click',()=>{const d=LN.calendarState.viewDate;LN.calendarState.viewDate=new Date(d.getFullYear(),d.getMonth()-1,1);rerender();});
+  app.querySelector('#nextMonth')?.addEventListener('click',()=>{const d=LN.calendarState.viewDate;LN.calendarState.viewDate=new Date(d.getFullYear(),d.getMonth()+1,1);rerender();});
+  app.querySelectorAll('.day-cell[data-date]').forEach(btn=>btn.addEventListener('click',()=>{LN.calendarState.selected=new Date(btn.dataset.date+'T00:00:00');LN.calendarState.viewDate=new Date(LN.calendarState.selected.getFullYear(),LN.calendarState.selected.getMonth(),1);rerender();}));
+  app.querySelectorAll('.task-button[data-task]').forEach(btn=>btn.addEventListener('click',()=>{const key=LN.isoLocal(LN.calendarState.selected), id=btn.dataset.task, map=LN.loadObject(LN.keys.calendarDone,{}); map[key]={...(map[key]||{}),[id]:!(map[key]?.[id])}; LN.saveObject(LN.keys.calendarDone,map); rerender();}));
+};
