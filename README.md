@@ -1,4 +1,4 @@
-# Life Next Dashboard v11.11 — Calendar Notes Thai
+# Life Next Dashboard v11.12 — Deeper Soft Colors Thai
 
 Static version for Vercel. No npm install, no Next.js build, no package.json.
 
@@ -13,7 +13,7 @@ Upload only these items to repo root:
 
 Do not upload `package.json` or `package-lock.json`.
 
-## Changes in v11.11
+## Changes in v11.12
 
 - Calendar: removed all `Prod` tags/tasks from the monthly calendar and selected-day detail panel.
 - Life Next Etsy Shop Sunday slots now show as `Etsy` instead of `Prod`.
@@ -22,7 +22,12 @@ Do not upload `package.json` or `package-lock.json`.
 - Backup/Restore still exports all Life Next localStorage data: Facebook records, YouTube records, Product/KDP/Ebook records, calendar checked state, and raw Life Next keys.
 
 
-## Changes in v11.11
+## Changes in v11.12
 - Added daily calendar notes in the right-side detail panel.
 - Days with saved notes show a 📝 pinned-note indicator in the calendar grid.
 - Calendar notes are included in Backup / Restore JSON.
+
+
+## v11.12 darker soft palette
+- Darkened the whole UI slightly while keeping the cozy pastel style.
+- Stronger text contrast, stronger card borders, deeper platform colors, and less washed-out calendar cells.

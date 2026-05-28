@@ -16,7 +16,7 @@ LN.exportBackupObject = () => {
   const lifeNextLocalStorage = {};
   Object.values(LN.keys).forEach(key => { lifeNextLocalStorage[key] = localStorage.getItem(key); });
   return {
-    version: "v11.11-calendar-notes",
+    version: "v11.12-deeper-soft-colors",
     exportedAt: new Date().toISOString(),
     note: "Life Next Dashboard data backup: Facebook, YouTube, Product records, Calendar done state, calendar notes, and raw Life Next localStorage keys.",
     facebook: LN.loadArray(LN.keys.facebook),
